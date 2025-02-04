@@ -8,11 +8,11 @@ set -euo pipefail
 # `get_curr_file` or `get_curr_dir` after sourcing `get_curr_file.sh`.
 _curr_file="${BASH_SOURCE[0]:-${(%):-%x}}"
 _curr_dir="$(dirname "$_curr_file")"
-source "$_curr_dir"/../../global-scripts/get_curr_file.sh "$_curr_file"
+source "$_curr_dir"/get_curr_file.sh "$_curr_file"
 
 source "$(get_curr_dir)"/activate.sh
 
-source "$(get_curr_dir)"/../../global-scripts/configure_apptainer.sh
+source "$(get_curr_dir)"/../env_cache_scripts/configure_apptainer.sh
 
 mkdir -p "$(dirname "$apptainer_build_file")"
 
