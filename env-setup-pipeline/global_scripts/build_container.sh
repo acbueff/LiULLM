@@ -13,13 +13,13 @@ _curr_file="${BASH_SOURCE[0]:-${(%):-%x}}"
 _curr_dir="$(dirname "$_curr_file")"
 source "$_curr_dir"/get_curr_file.sh "$_curr_file"
 
-source "$(get_curr_dir)"/../global_configuration.sh
-source "$(get_curr_dir)"/get_curr_file.sh
+source "$(get_curr_dir)"/global_configuration.sh
+#source "$(get_curr_dir)"/get_curr_file.sh
 
 if [ "$container_library" = apptainer ]; then
-    source "$(get_curr_dir)"/outside-container-scripts/build_apptainer.sh "$@"
+    source "$(get_curr_dir)"/build_apptainer.sh "$@"
 elif [ "$container_library" = docker ]; then
-    source "$(get_curr_dir)"/outside-container-scripts/build_docker.sh "$@"
+    source "$(get_curr_dir)"/build_docker.sh "$@"
 else
     echo "Unknown container library \"$container_library\"."
     pop_curr_file

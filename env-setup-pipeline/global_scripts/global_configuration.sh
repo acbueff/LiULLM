@@ -14,7 +14,7 @@ source "$_curr_dir"/get_curr_file.sh "$_curr_file"
 # - "local" (your local machine)
 # - "jsc" (JUWELS Booster, JUWELS Cluster, JURECA-DC)
 # - "bsc" (MareNostrum 5 ACC)
-machine_name=jsc
+machine_name=berzelius
 
 # Set the following variables depending on the machine:
 # - `root_project_dir`
@@ -22,15 +22,23 @@ machine_name=jsc
 # - `project_name`
 # - `container_library`
 # - `cuda_compute_capability`
-source "$(get_curr_dir)"/global-scripts/load_machine.sh "$machine_name"
+source "$(get_curr_dir)"/load_machine.sh "$machine_name"
+
+
+if [ "$machine_name" = "berzelius" ]; then
+    base_project_dir="/home/x_anbue/LiULLM"
+    base_scratch_dir="/proj/berzelius-aiics-real/users/x_anbue/LiULLM-storage"
+fi
+
 
 # Directory where the environment's permanent files will be set up
 # (e.g. code or included repositories).
-base_project_dir="$root_project_dir"/"$project_name"/"$USER"
+#base_project_dir="$root_project_dir"/"$project_name"/"$USER"
 
 # Directory where the environment's non-permanent files (e.g. Python
 # `venv`, container, ...) will be set up.
-base_scratch_dir="$root_scratch_dir"/"$project_name"/"$USER"
+
+#base_scratch_dir="$root_scratch_dir"/"$project_name"/"$USER"
 # Where cache files are stored.
 cache_dir="$base_scratch_dir"/.cache
 
