@@ -1,0 +1,6 @@
+[
+  {"lang": "swe", "path": "/p/scratch/trustllm-eu/WP2/FHG/web/OSCAR_CLEAN_DEDUP/sv/oscar/2022-05_filtered_deduplicated/2022-05_filtered_deduplicated_sv_part_027_of_067.jsonl", "source": "oscar_clean_dedup", "text_getter": ".text"},
+  {"lang": "eng", "path": "/p/scratch/trustllm-eu/WP2/FHG/web/OSCAR_CLEAN_DEDUP/en/2019-26_filtered_deduplicated/2019-26_filtered_deduplicated_en_part_137_of_200.jsonl", "source": "oscar_clean_dedup", "text_getter": ".text"},
+  {"lang": "eng", "path": "/p/scratch/trustllm-eu/WP2/FHG/web/OSCAR_CLEAN_DEDUP/en/2021-17_filtered_deduplicated/2021-17_filtered_deduplicated_en_part_186_of_200.jsonl", "source": "oscar_clean_dedup", "text_getter": ".text"},
+  {"lang": "isl", "path": "/p/scratch/trustllm-eu/WP2/FHG/web/OSCAR_CLEAN_DEDUP/is/oscar/2022-05_filtered_deduplicated/2022-05_filtered_deduplicated_is_part_004_of_004.jsonl", "source": "oscar_clean_dedup", "text_getter": ".text"}
+]
