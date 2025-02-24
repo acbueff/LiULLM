@@ -8,11 +8,23 @@ LIMIT_BYTES = 5 * 1024**3
 
 def get_file_size(filename):
     """
-    Retrieve the file size (in bytes) via a HEAD request.
+    Retrieve the file size (in bytes) using a GET request with a Range header.
+    Fallback to Content-Length if Content-Range is unavailable.
     """
     url = f"https://huggingface.co/datasets/PleIAs/English-PD/resolve/main/{filename}"
-    response = requests.head(url)
-    if response.status_code == 200:
+    headers = {"Range": "bytes=0-0"}
+    response = requests.get(url, headers=headers, stream=True)
+    if response.status_code in (200, 206):  # 206 means partial content
+        # Try to extract size from Content-Range header
+        content_range = response.headers.get("Content-Range")
+        if content_range:
+            try:
+                # "Content-Range" is typically "bytes 0-0/12345"
+                total_size = int(content_range.split('/')[-1])
+                return total_size
+            except (IndexError, ValueError):
+                pass
+        # Fallback to the Content-Length header if available
         return int(response.headers.get("Content-Length", 0))
     else:
         print(f"Warning: Unable to fetch size for {filename}.")
@@ -23,7 +35,7 @@ def download_file(filename):
     Download a single file from the dataset repository and store it locally.
     """
     url = f"https://huggingface.co/datasets/PleIAs/English-PD/resolve/main/{filename}"
-    local_path = os.path.join("data", filename)
+    local_path = os.path.join("JUWELS/WP2/data/eng-common-corpus", filename)
     os.makedirs(os.path.dirname(local_path), exist_ok=True)
     
     with requests.get(url, stream=True) as r:
