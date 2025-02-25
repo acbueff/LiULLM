@@ -1,0 +1,52 @@
+{
+    "pipeline": [
+        {
+            "limit": -1,
+            "skip": 0,
+            "text_key": "text",
+            "id_key": "id",
+            "adapter": "<bound method BaseReader._default_adapter of \ud83d\udcd6 - READER: \ud83d\udcd2 Parquet>",
+            "_empty_warning": false,
+            "default_metadata": null,
+            "data_folder": "DataFolder(path='datasets/HuggingFaceFW/fineweb-2/data/swe_Latn/train/000_00000.parquet', fs=<huggingface_hub.hf_file_system.HfFileSystem object at 0x7fae93fff790>)",
+            "paths_file": null,
+            "recursive": true,
+            "glob_pattern": null,
+            "shuffle_files": false,
+            "file_progress": false,
+            "doc_progress": false,
+            "batch_size": 1000,
+            "read_metadata": true
+        },
+        {
+            "exclusion_writer": null,
+            "batch_size": 1,
+            "filter_function": "<__main__.SizeLimitFilter object at 0x7fae99193550>"
+        },
+        {
+            "compression": null,
+            "output_folder": "DataFolder(path='/home/andbu/Documents/trustllm/TechStack/LiULLM/JUWELS/WP2/data/fineweb2/swedish_parquet_output_2', fs=<fsspec.implementations.local.LocalFileSystem object at 0x7fae59e20090>)",
+            "max_file_size": 5368709120,
+            "file_id_counter": {},
+            "output_filename": "<string.Template object at 0x7fae59e20c50>",
+            "output_mg": "<datatrove.io.OutputFileManager object at 0x7fae990b6610>",
+            "adapter": "<bound method DiskWriter._default_adapter of \ud83d\udcbd - WRITER: \ud83d\udcd2 Parquet>",
+            "expand_metadata": false,
+            "_writers": {},
+            "_batches": {},
+            "_file_counter": {},
+            "batch_size": 1000
+        }
+    ],
+    "logging_dir": "DataFolder(path='/home/andbu/Documents/trustllm/TechStack/LiULLM/logs/2025-02-25_14-04-20_lzkdi', fs=<fsspec.implementations.local.LocalFileSystem object at 0x7fae59e20090>)",
+    "skip_completed": true,
+    "randomize_start_duration": 0,
+    "tasks": 1,
+    "workers": 1,
+    "start_method": "forkserver",
+    "local_tasks": 1,
+    "local_rank_offset": 0,
+    "depends": null,
+    "_launched": true,
+    "world_size": 1
+}

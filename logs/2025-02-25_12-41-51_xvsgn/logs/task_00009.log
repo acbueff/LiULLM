@@ -1,0 +1,7 @@
+2025-02-25 12:41:51.812 | INFO     | datatrove.utils.logging:add_task_logger:58 - Launching pipeline for rank=9
+2025-02-25 12:41:51.812 | INFO     | datatrove.utils.logging:log_pipeline:90 - 
+--- 🛠️ PIPELINE 🛠
+📖 - READER: 📒 Parquet
+<__main__.SizeLimitFilter object at 0x7f14ea43a2d0>
+💽 - WRITER: 📒 Parquet
+2025-02-25 12:41:52.982 | INFO     | datatrove.pipeline.readers.base:read_files_shard:191 - Reading input file 003_00000.parquet, 1/1

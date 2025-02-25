@@ -1,0 +1,83 @@
+2025-02-25 14:16:58.895 | INFO     | datatrove.utils.logging:add_task_logger:58 - Launching pipeline for rank=1
+2025-02-25 14:16:58.895 | INFO     | datatrove.utils.logging:log_pipeline:90 - 
+--- 🛠️ PIPELINE 🛠
+📖 - READER: 📒 Parquet
+🔻 - FILTER: 👤 Lambda
+💽 - WRITER: 📒 Parquet
+2025-02-25 14:17:00.234 | INFO     | datatrove.pipeline.readers.base:read_files_shard:191 - Reading input file 000_00001.parquet, 1/7
+2025-02-25 14:17:02.461 | ERROR    | datatrove.executor.base:_run_for_rank:108 - '>=' not supported between instances of 'int' and 'NoneType'
+Traceback (most recent call last):
+
+  File "<string>", line 1, in <module>
+  File "/home/andbu/miniconda3/envs/llms/lib/python3.11/site-packages/multiprocess/forkserver.py", line 273, in main
+    code = _serve_one(child_r, fds,
+           │          │        └ [10, 11, 12, 13, 14, 15]
+           │          └ 8
+           └ <function _serve_one at 0x7f92f09402c0>
+  File "/home/andbu/miniconda3/envs/llms/lib/python3.11/site-packages/multiprocess/forkserver.py", line 312, in _serve_one
+    code = spawn._main(child_r, parent_sentinel)
+           │     │     │        └ 4
+           │     │     └ 8
+           │     └ <function _main at 0x7f92f092f420>
+           └ <module 'multiprocess.spawn' from '/home/andbu/miniconda3/envs/llms/lib/python3.11/site-packages/multiprocess/spawn.py'>
+  File "/home/andbu/miniconda3/envs/llms/lib/python3.11/site-packages/multiprocess/spawn.py", line 135, in _main
+    return self._bootstrap(parent_sentinel)
+           │    │          └ 4
+           │    └ <function BaseProcess._bootstrap at 0x7f92f0ea8b80>
+           └ <ForkServerProcess name='ForkServerPoolWorker-2' parent=30960 started daemon>
+  File "/home/andbu/miniconda3/envs/llms/lib/python3.11/site-packages/multiprocess/process.py", line 314, in _bootstrap
+    self.run()
+    │    └ <function BaseProcess.run at 0x7f92f0ea80e0>
+    └ <ForkServerProcess name='ForkServerPoolWorker-2' parent=30960 started daemon>
+  File "/home/andbu/miniconda3/envs/llms/lib/python3.11/site-packages/multiprocess/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    │    │        │    │        │    └ {}
+    │    │        │    │        └ <ForkServerProcess name='ForkServerPoolWorker-2' parent=30960 started daemon>
+    │    │        │    └ (<multiprocess.queues.SimpleQueue object at 0x7f92ef30cbd0>, <multiprocess.queues.SimpleQueue object at 0x7f92d213ca10>, None...
+    │    │        └ <ForkServerProcess name='ForkServerPoolWorker-2' parent=30960 started daemon>
+    │    └ <function worker at 0x7f92b1d1b740>
+    └ <ForkServerProcess name='ForkServerPoolWorker-2' parent=30960 started daemon>
+  File "/home/andbu/miniconda3/envs/llms/lib/python3.11/site-packages/multiprocess/pool.py", line 125, in worker
+    result = (True, func(*args, **kwds))
+                    │     │       └ {}
+                    │     └ (1,)
+                    └ functools.partial(<bound method LocalPipelineExecutor._launch_run_for_rank of <datatrove.executor.local.LocalPipelineExecutor...
+  File "/home/andbu/miniconda3/envs/llms/lib/python3.11/site-packages/datatrove/executor/local.py", line 76, in _launch_run_for_rank
+    return self._run_for_rank(rank, local_rank)
+           │    │             │     └ 1
+           │    │             └ 1
+           │    └ <function PipelineExecutor._run_for_rank at 0x7f92ef25f560>
+           └ <datatrove.executor.local.LocalPipelineExecutor object at 0x7f92f104d650>
+> File "/home/andbu/miniconda3/envs/llms/lib/python3.11/site-packages/datatrove/executor/base.py", line 96, in _run_for_rank
+    deque(pipelined_data, maxlen=0)
+    │     └ <generator object DiskWriter.run at 0x7f92b1cf3bc0>
+    └ <class 'collections.deque'>
+  File "/home/andbu/miniconda3/envs/llms/lib/python3.11/site-packages/datatrove/pipeline/writers/disk_base.py", line 178, in run
+    for document in data:
+                    └ <generator object BaseFilter.run at 0x7f92b1d487c0>
+  File "/home/andbu/miniconda3/envs/llms/lib/python3.11/site-packages/datatrove/pipeline/filters/base_filter.py", line 64, in run
+    for batch in batched(data, self.batch_size):
+                 │       │     │    └ 1
+                 │       │     └ 🔻 - FILTER: 👤 Lambda
+                 │       └ <generator object BaseDiskReader.run at 0x7f92f104adf0>
+                 └ <function batched at 0x7f92d211d6c0>
+  File "/home/andbu/miniconda3/envs/llms/lib/python3.11/site-packages/datatrove/utils/batching.py", line 20, in batched
+    while batch := list(itertools.islice(it, n)):
+                        │         │      │   └ 1
+                        │         │      └ <generator object BaseDiskReader.run at 0x7f92f104adf0>
+                        │         └ <class 'itertools.islice'>
+                        └ <module 'itertools' (built-in)>
+  File "/home/andbu/miniconda3/envs/llms/lib/python3.11/site-packages/datatrove/pipeline/readers/base.py", line 235, in run
+    for doc in self.read_files_shard(files_shard):
+               │    │                └ ['000_00001.parquet', '001_00000.parquet', '001_00002.parquet', '002_00001.parquet', '003_00000.parquet', '003_00002.parquet'...
+               │    └ <function BaseDiskReader.read_files_shard at 0x7f92ef270cc0>
+               └ 📖 - READER: 📒 Parquet
+  File "/home/andbu/miniconda3/envs/llms/lib/python3.11/site-packages/datatrove/pipeline/readers/base.py", line 198, in read_files_shard
+    if self.limit != -1 and li >= self.limit:
+       │    │               │     │    └ None
+       │    │               │     └ 📖 - READER: 📒 Parquet
+       │    │               └ 0
+       │    └ None
+       └ 📖 - READER: 📒 Parquet
+
+TypeError: '>=' not supported between instances of 'int' and 'NoneType'

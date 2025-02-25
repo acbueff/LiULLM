@@ -1,0 +1,101 @@
+2025-02-25 14:05:28.749 | INFO     | datatrove.utils.logging:add_task_logger:58 - Launching pipeline for rank=0
+2025-02-25 14:05:28.749 | INFO     | datatrove.utils.logging:log_pipeline:90 - 
+--- 🛠️ PIPELINE 🛠
+📖 - READER: 📒 Parquet
+🔻 - FILTER: 👤 Lambda
+💽 - WRITER: 📒 Parquet
+2025-02-25 14:05:29.078 | ERROR    | datatrove.executor.base:_run_for_rank:108 - datasets/HuggingFaceFW/fineweb-2/data/swe_Latn/train/000_00003.parquet
+Traceback (most recent call last):
+
+  File "/home/andbu/Documents/trustllm/TechStack/LiULLM/JUWELS/WP2/data/get_swed_2.py", line 273, in <module>
+    download_in_stages(
+    └ <function download_in_stages at 0x7fae97377060>
+
+  File "/home/andbu/Documents/trustllm/TechStack/LiULLM/JUWELS/WP2/data/get_swed_2.py", line 254, in download_in_stages
+    pipeline_executor.run()
+    │                 └ <function LocalPipelineExecutor.run at 0x7fae97367b00>
+    └ <datatrove.executor.local.LocalPipelineExecutor object at 0x7fae59eb71d0>
+
+  File "/home/andbu/miniconda3/envs/llms/lib/python3.11/site-packages/datatrove/executor/local.py", line 127, in run
+    stats.append(self._launch_run_for_rank(rank, ranks_q))
+    │     │      │    │                    │     └ <AutoProxy[Queue] object, typeid 'Queue' at 0x7fae930be290>
+    │     │      │    │                    └ 0
+    │     │      │    └ <function LocalPipelineExecutor._launch_run_for_rank at 0x7fae98cb3ec0>
+    │     │      └ <datatrove.executor.local.LocalPipelineExecutor object at 0x7fae59eb71d0>
+    │     └ <method 'append' of 'list' objects>
+    └ []
+  File "/home/andbu/miniconda3/envs/llms/lib/python3.11/site-packages/datatrove/executor/local.py", line 76, in _launch_run_for_rank
+    return self._run_for_rank(rank, local_rank)
+           │    │             │     └ 0
+           │    │             └ 0
+           │    └ <function PipelineExecutor._run_for_rank at 0x7fae97367600>
+           └ <datatrove.executor.local.LocalPipelineExecutor object at 0x7fae59eb71d0>
+> File "/home/andbu/miniconda3/envs/llms/lib/python3.11/site-packages/datatrove/executor/base.py", line 96, in _run_for_rank
+    deque(pipelined_data, maxlen=0)
+    │     └ <generator object DiskWriter.run at 0x7fae930cd690>
+    └ <class 'collections.deque'>
+  File "/home/andbu/miniconda3/envs/llms/lib/python3.11/site-packages/datatrove/pipeline/writers/disk_base.py", line 178, in run
+    for document in data:
+                    └ <generator object BaseFilter.run at 0x7fae930c87c0>
+  File "/home/andbu/miniconda3/envs/llms/lib/python3.11/site-packages/datatrove/pipeline/filters/base_filter.py", line 64, in run
+    for batch in batched(data, self.batch_size):
+                 │       │     │    └ 1
+                 │       │     └ 🔻 - FILTER: 👤 Lambda
+                 │       └ <generator object BaseDiskReader.run at 0x7fae930cd580>
+                 └ <function batched at 0x7fae5a3dd800>
+  File "/home/andbu/miniconda3/envs/llms/lib/python3.11/site-packages/datatrove/utils/batching.py", line 20, in batched
+    while batch := list(itertools.islice(it, n)):
+                        │         │      │   └ 1
+                        │         │      └ <generator object BaseDiskReader.run at 0x7fae930cd580>
+                        │         └ <class 'itertools.islice'>
+                        └ <module 'itertools' (built-in)>
+  File "/home/andbu/miniconda3/envs/llms/lib/python3.11/site-packages/datatrove/pipeline/readers/base.py", line 223, in run
+    self.data_folder.get_shard(rank, world_size, recursive=self.recursive, glob_pattern=self.glob_pattern)
+    │    │           │         │     │                     │    │                       │    └ None
+    │    │           │         │     │                     │    │                       └ 📖 - READER: 📒 Parquet
+    │    │           │         │     │                     │    └ True
+    │    │           │         │     │                     └ 📖 - READER: 📒 Parquet
+    │    │           │         │     └ 1
+    │    │           │         └ 0
+    │    │           └ <function DataFolder.get_shard at 0x7fae97525da0>
+    │    └ DataFolder(path='datasets/HuggingFaceFW/fineweb-2/data/swe_Latn/train/000_00003.parquet', fs=<huggingface_hub.hf_file_system....
+    └ 📖 - READER: 📒 Parquet
+  File "/home/andbu/miniconda3/envs/llms/lib/python3.11/site-packages/datatrove/io.py", line 178, in get_shard
+    all_files = self.list_files(**kwargs)
+                │    │            └ {'recursive': True, 'glob_pattern': None}
+                │    └ <function DataFolder.list_files at 0x7fae97525d00>
+                └ DataFolder(path='datasets/HuggingFaceFW/fineweb-2/data/swe_Latn/train/000_00003.parquet', fs=<huggingface_hub.hf_file_system....
+  File "/home/andbu/miniconda3/envs/llms/lib/python3.11/site-packages/datatrove/io.py", line 152, in list_files
+    self.find(subdirectory, maxdepth=1 if not recursive else None, detail=True, **extra_options)
+    │    │    │                               │                                   └ {'expand_info': False}
+    │    │    │                               └ True
+    │    │    └ ''
+    │    └ <function DirFileSystem.find at 0x7fae97df0ae0>
+    └ DataFolder(path='datasets/HuggingFaceFW/fineweb-2/data/swe_Latn/train/000_00003.parquet', fs=<huggingface_hub.hf_file_system....
+  File "/home/andbu/miniconda3/envs/llms/lib/python3.11/site-packages/fsspec/implementations/dirfs.py", line 312, in find
+    ret = self.fs.find(self._join(path), *args, **kwargs)
+          │    │  │    │    │     │       │       └ {'maxdepth': None, 'detail': True, 'expand_info': False}
+          │    │  │    │    │     │       └ ()
+          │    │  │    │    │     └ ''
+          │    │  │    │    └ <function DirFileSystem._join at 0x7fae97dee7a0>
+          │    │  │    └ DataFolder(path='datasets/HuggingFaceFW/fineweb-2/data/swe_Latn/train/000_00003.parquet', fs=<huggingface_hub.hf_file_system....
+          │    │  └ <function HfFileSystem.find at 0x7fae974a82c0>
+          │    └ <huggingface_hub.hf_file_system.HfFileSystem object at 0x7fae93fff790>
+          └ DataFolder(path='datasets/HuggingFaceFW/fineweb-2/data/swe_Latn/train/000_00003.parquet', fs=<huggingface_hub.hf_file_system....
+  File "/home/andbu/miniconda3/envs/llms/lib/python3.11/site-packages/huggingface_hub/hf_file_system.py", line 566, in find
+    if self.info(path, revision=revision, **kwargs)["type"] == "file":
+       │    │    │              │           └ {'expand_info': False}
+       │    │    │              └ None
+       │    │    └ 'datasets/HuggingFaceFW/fineweb-2/data/swe_Latn/train/000_00003.parquet'
+       │    └ <function HfFileSystem.info at 0x7fae974a84a0>
+       └ <huggingface_hub.hf_file_system.HfFileSystem object at 0x7fae93fff790>
+  File "/home/andbu/miniconda3/envs/llms/lib/python3.11/site-packages/huggingface_hub/hf_file_system.py", line 716, in info
+    _raise_file_not_found(path, None)
+    │                     └ 'datasets/HuggingFaceFW/fineweb-2/data/swe_Latn/train/000_00003.parquet'
+    └ <function _raise_file_not_found at 0x7fae974a9260>
+  File "/home/andbu/miniconda3/envs/llms/lib/python3.11/site-packages/huggingface_hub/hf_file_system.py", line 1136, in _raise_file_not_found
+    raise FileNotFoundError(msg) from err
+                            │         └ None
+                            └ 'datasets/HuggingFaceFW/fineweb-2/data/swe_Latn/train/000_00003.parquet'
+
+FileNotFoundError: datasets/HuggingFaceFW/fineweb-2/data/swe_Latn/train/000_00003.parquet

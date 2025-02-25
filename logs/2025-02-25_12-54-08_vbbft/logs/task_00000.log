@@ -1,0 +1,59 @@
+2025-02-25 12:54:09.115 | INFO     | datatrove.utils.logging:add_task_logger:58 - Launching pipeline for rank=0
+2025-02-25 12:54:09.115 | INFO     | datatrove.utils.logging:log_pipeline:90 - 
+--- 🛠️ PIPELINE 🛠
+📖 - READER: 📒 Parquet
+<__main__.SizeLimitFilter object at 0x7effd4ed1fd0>
+💽 - WRITER: 📒 Parquet
+2025-02-25 12:54:10.494 | INFO     | datatrove.pipeline.readers.base:read_files_shard:191 - Reading input file 000_00000.parquet, 1/2
+2025-02-25 12:54:20.332 | ERROR    | datatrove.executor.base:_run_for_rank:108 - 'bool' object is not iterable
+Traceback (most recent call last):
+
+  File "<string>", line 1, in <module>
+  File "/home/andbu/miniconda3/envs/llms/lib/python3.11/site-packages/multiprocess/forkserver.py", line 273, in main
+    code = _serve_one(child_r, fds,
+           │          │        └ [10, 11, 12, 13, 14, 15]
+           │          └ 8
+           └ <function _serve_one at 0x7effd66cc2c0>
+  File "/home/andbu/miniconda3/envs/llms/lib/python3.11/site-packages/multiprocess/forkserver.py", line 312, in _serve_one
+    code = spawn._main(child_r, parent_sentinel)
+           │     │     │        └ 4
+           │     │     └ 8
+           │     └ <function _main at 0x7effd66bb420>
+           └ <module 'multiprocess.spawn' from '/home/andbu/miniconda3/envs/llms/lib/python3.11/site-packages/multiprocess/spawn.py'>
+  File "/home/andbu/miniconda3/envs/llms/lib/python3.11/site-packages/multiprocess/spawn.py", line 135, in _main
+    return self._bootstrap(parent_sentinel)
+           │    │          └ 4
+           │    └ <function BaseProcess._bootstrap at 0x7effd6c34b80>
+           └ <ForkServerProcess name='ForkServerPoolWorker-2' parent=21413 started daemon>
+  File "/home/andbu/miniconda3/envs/llms/lib/python3.11/site-packages/multiprocess/process.py", line 314, in _bootstrap
+    self.run()
+    │    └ <function BaseProcess.run at 0x7effd6c340e0>
+    └ <ForkServerProcess name='ForkServerPoolWorker-2' parent=21413 started daemon>
+  File "/home/andbu/miniconda3/envs/llms/lib/python3.11/site-packages/multiprocess/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    │    │        │    │        │    └ {}
+    │    │        │    │        └ <ForkServerProcess name='ForkServerPoolWorker-2' parent=21413 started daemon>
+    │    │        │    └ (<multiprocess.queues.SimpleQueue object at 0x7effd4eb22d0>, <multiprocess.queues.SimpleQueue object at 0x7effd4ec5690>, None...
+    │    │        └ <ForkServerProcess name='ForkServerPoolWorker-2' parent=21413 started daemon>
+    │    └ <function worker at 0x7effd4ec04a0>
+    └ <ForkServerProcess name='ForkServerPoolWorker-2' parent=21413 started daemon>
+  File "/home/andbu/miniconda3/envs/llms/lib/python3.11/site-packages/multiprocess/pool.py", line 125, in worker
+    result = (True, func(*args, **kwds))
+                    │     │       └ {}
+                    │     └ (0,)
+                    └ functools.partial(<bound method LocalPipelineExecutor._launch_run_for_rank of <datatrove.executor.local.LocalPipelineExecutor...
+  File "/home/andbu/miniconda3/envs/llms/lib/python3.11/site-packages/datatrove/executor/local.py", line 76, in _launch_run_for_rank
+    return self._run_for_rank(rank, local_rank)
+           │    │             │     └ 0
+           │    │             └ 0
+           │    └ <function PipelineExecutor._run_for_rank at 0x7effd4feb560>
+           └ <datatrove.executor.local.LocalPipelineExecutor object at 0x7effd509b550>
+> File "/home/andbu/miniconda3/envs/llms/lib/python3.11/site-packages/datatrove/executor/base.py", line 96, in _run_for_rank
+    deque(pipelined_data, maxlen=0)
+    │     └ <generator object DiskWriter.run at 0x7effd6dd6df0>
+    └ <class 'collections.deque'>
+  File "/home/andbu/miniconda3/envs/llms/lib/python3.11/site-packages/datatrove/pipeline/writers/disk_base.py", line 178, in run
+    for document in data:
+                    └ True
+
+TypeError: 'bool' object is not iterable

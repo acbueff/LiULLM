@@ -1,0 +1,74 @@
+2025-02-25 12:35:54.828 | INFO     | datatrove.utils.logging:add_task_logger:58 - Launching pipeline for rank=4
+2025-02-25 12:35:54.829 | INFO     | datatrove.utils.logging:log_pipeline:90 - 
+--- 🛠️ PIPELINE 🛠
+📖 - READER: 📒 Parquet
+<__main__.SizeLimitFilter object at 0x7f18adf69e50>
+💽 - WRITER: 📒 Parquet
+2025-02-25 12:35:54.829 | ERROR    | datatrove.executor.base:_run_for_rank:108 - 'generator' object has no attribute 'get'
+Traceback (most recent call last):
+
+  File "/home/andbu/Documents/trustllm/TechStack/LiULLM/JUWELS/WP2/data/get_swed_fineweb.py", line 30, in __call__
+    text = doc.text
+           └ <generator object BaseDiskReader.run at 0x7f18afe66df0>
+
+AttributeError: 'generator' object has no attribute 'text'
+
+
+During handling of the above exception, another exception occurred:
+
+
+Traceback (most recent call last):
+
+  File "<string>", line 1, in <module>
+  File "/home/andbu/miniconda3/envs/llms/lib/python3.11/site-packages/multiprocess/forkserver.py", line 273, in main
+    code = _serve_one(child_r, fds,
+           │          │        └ [10, 11, 12, 13, 14, 15]
+           │          └ 8
+           └ <function _serve_one at 0x7f18af7582c0>
+  File "/home/andbu/miniconda3/envs/llms/lib/python3.11/site-packages/multiprocess/forkserver.py", line 312, in _serve_one
+    code = spawn._main(child_r, parent_sentinel)
+           │     │     │        └ 4
+           │     │     └ 8
+           │     └ <function _main at 0x7f18af747420>
+           └ <module 'multiprocess.spawn' from '/home/andbu/miniconda3/envs/llms/lib/python3.11/site-packages/multiprocess/spawn.py'>
+  File "/home/andbu/miniconda3/envs/llms/lib/python3.11/site-packages/multiprocess/spawn.py", line 135, in _main
+    return self._bootstrap(parent_sentinel)
+           │    │          └ 4
+           │    └ <function BaseProcess._bootstrap at 0x7f18afcc4b80>
+           └ <ForkServerProcess name='ForkServerPoolWorker-2' parent=19871 started daemon>
+  File "/home/andbu/miniconda3/envs/llms/lib/python3.11/site-packages/multiprocess/process.py", line 314, in _bootstrap
+    self.run()
+    │    └ <function BaseProcess.run at 0x7f18afcc40e0>
+    └ <ForkServerProcess name='ForkServerPoolWorker-2' parent=19871 started daemon>
+  File "/home/andbu/miniconda3/envs/llms/lib/python3.11/site-packages/multiprocess/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    │    │        │    │        │    └ {}
+    │    │        │    │        └ <ForkServerProcess name='ForkServerPoolWorker-2' parent=19871 started daemon>
+    │    │        │    └ (<multiprocess.queues.SimpleQueue object at 0x7f18adf46350>, <multiprocess.queues.SimpleQueue object at 0x7f18adf59710>, None...
+    │    │        └ <ForkServerProcess name='ForkServerPoolWorker-2' parent=19871 started daemon>
+    │    └ <function worker at 0x7f18adf544a0>
+    └ <ForkServerProcess name='ForkServerPoolWorker-2' parent=19871 started daemon>
+  File "/home/andbu/miniconda3/envs/llms/lib/python3.11/site-packages/multiprocess/pool.py", line 125, in worker
+    result = (True, func(*args, **kwds))
+                    │     │       └ {}
+                    │     └ (4,)
+                    └ functools.partial(<bound method LocalPipelineExecutor._launch_run_for_rank of <datatrove.executor.local.LocalPipelineExecutor...
+  File "/home/andbu/miniconda3/envs/llms/lib/python3.11/site-packages/datatrove/executor/local.py", line 76, in _launch_run_for_rank
+    return self._run_for_rank(rank, local_rank)
+           │    │             │     └ 4
+           │    │             └ 4
+           │    └ <function PipelineExecutor._run_for_rank at 0x7f18ae083560>
+           └ <datatrove.executor.local.LocalPipelineExecutor object at 0x7f18ae133250>
+> File "/home/andbu/miniconda3/envs/llms/lib/python3.11/site-packages/datatrove/executor/base.py", line 90, in _run_for_rank
+    pipelined_data = pipeline_step(pipelined_data, rank, self.world_size)
+                     │             │               │     │    └ <property object at 0x7f18af768630>
+                     │             │               │     └ <datatrove.executor.local.LocalPipelineExecutor object at 0x7f18ae133250>
+                     │             │               └ 4
+                     │             └ <generator object BaseDiskReader.run at 0x7f18afe66df0>
+                     └ <__main__.SizeLimitFilter object at 0x7f18adf69e50>
+
+  File "/home/andbu/Documents/trustllm/TechStack/LiULLM/JUWELS/WP2/data/get_swed_fineweb.py", line 32, in __call__
+    text = doc.get("text", "")
+           └ <generator object BaseDiskReader.run at 0x7f18afe66df0>
+
+AttributeError: 'generator' object has no attribute 'get'

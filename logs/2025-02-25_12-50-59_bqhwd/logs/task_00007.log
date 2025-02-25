@@ -1,0 +1,58 @@
+2025-02-25 12:50:59.409 | INFO     | datatrove.utils.logging:add_task_logger:58 - Launching pipeline for rank=7
+2025-02-25 12:50:59.409 | INFO     | datatrove.utils.logging:log_pipeline:90 - 
+--- 🛠️ PIPELINE 🛠
+📖 - READER: 📒 Parquet
+<__main__.SizeLimitFilter object at 0x7f1baf9d2010>
+💽 - WRITER: 📒 Parquet
+2025-02-25 12:50:59.410 | ERROR    | datatrove.executor.base:_run_for_rank:108 - SizeLimitFilter.__call__() takes 2 positional arguments but 4 were given
+Traceback (most recent call last):
+
+  File "<string>", line 1, in <module>
+  File "/home/andbu/miniconda3/envs/llms/lib/python3.11/site-packages/multiprocess/forkserver.py", line 273, in main
+    code = _serve_one(child_r, fds,
+           │          │        └ [19, 20, 21, 22, 23, 24]
+           │          └ 8
+           └ <function _serve_one at 0x7f1bb11cc2c0>
+  File "/home/andbu/miniconda3/envs/llms/lib/python3.11/site-packages/multiprocess/forkserver.py", line 312, in _serve_one
+    code = spawn._main(child_r, parent_sentinel)
+           │     │     │        └ 4
+           │     │     └ 8
+           │     └ <function _main at 0x7f1bb11bb420>
+           └ <module 'multiprocess.spawn' from '/home/andbu/miniconda3/envs/llms/lib/python3.11/site-packages/multiprocess/spawn.py'>
+  File "/home/andbu/miniconda3/envs/llms/lib/python3.11/site-packages/multiprocess/spawn.py", line 135, in _main
+    return self._bootstrap(parent_sentinel)
+           │    │          └ 4
+           │    └ <function BaseProcess._bootstrap at 0x7f1bb1734b80>
+           └ <ForkServerProcess name='ForkServerPoolWorker-9' parent=21173 started daemon>
+  File "/home/andbu/miniconda3/envs/llms/lib/python3.11/site-packages/multiprocess/process.py", line 314, in _bootstrap
+    self.run()
+    │    └ <function BaseProcess.run at 0x7f1bb17340e0>
+    └ <ForkServerProcess name='ForkServerPoolWorker-9' parent=21173 started daemon>
+  File "/home/andbu/miniconda3/envs/llms/lib/python3.11/site-packages/multiprocess/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    │    │        │    │        │    └ {}
+    │    │        │    │        └ <ForkServerProcess name='ForkServerPoolWorker-9' parent=21173 started daemon>
+    │    │        │    └ (<multiprocess.queues.SimpleQueue object at 0x7f1baf9b2510>, <multiprocess.queues.SimpleQueue object at 0x7f1baf9c6110>, None...
+    │    │        └ <ForkServerProcess name='ForkServerPoolWorker-9' parent=21173 started daemon>
+    │    └ <function worker at 0x7f1baf9c04a0>
+    └ <ForkServerProcess name='ForkServerPoolWorker-9' parent=21173 started daemon>
+  File "/home/andbu/miniconda3/envs/llms/lib/python3.11/site-packages/multiprocess/pool.py", line 125, in worker
+    result = (True, func(*args, **kwds))
+                    │     │       └ {}
+                    │     └ (7,)
+                    └ functools.partial(<bound method LocalPipelineExecutor._launch_run_for_rank of <datatrove.executor.local.LocalPipelineExecutor...
+  File "/home/andbu/miniconda3/envs/llms/lib/python3.11/site-packages/datatrove/executor/local.py", line 76, in _launch_run_for_rank
+    return self._run_for_rank(rank, local_rank)
+           │    │             │     └ 7
+           │    │             └ 7
+           │    └ <function PipelineExecutor._run_for_rank at 0x7f1bafaef560>
+           └ <datatrove.executor.local.LocalPipelineExecutor object at 0x7f1bafb9b590>
+> File "/home/andbu/miniconda3/envs/llms/lib/python3.11/site-packages/datatrove/executor/base.py", line 90, in _run_for_rank
+    pipelined_data = pipeline_step(pipelined_data, rank, self.world_size)
+                     │             │               │     │    └ <property object at 0x7f1bb11e04a0>
+                     │             │               │     └ <datatrove.executor.local.LocalPipelineExecutor object at 0x7f1bafb9b590>
+                     │             │               └ 7
+                     │             └ <generator object BaseDiskReader.run at 0x7f1bb18d6df0>
+                     └ <__main__.SizeLimitFilter object at 0x7f1baf9d2010>
+
+TypeError: SizeLimitFilter.__call__() takes 2 positional arguments but 4 were given
