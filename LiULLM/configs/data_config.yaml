@@ -1,0 +1,33 @@
+# Data Preprocessing Configuration
+
+# Raw data paths
+raw_data:
+  icelandic: "data/raw/isl/"
+  swedish: "data/raw/swe/"
+  english: "data/raw/eng/"
+
+# Processed data paths
+processed_data:
+  train: "data/processed/train.txt"
+  validation: "data/processed/val.txt"
+  
+# Sampling ratios for each language (to balance the dataset)
+sampling:
+  icelandic: 1.0
+  swedish: 1.0
+  english: 1.0
+
+# Processing options
+processing:
+  remove_duplicates: true
+  lowercase: false  # Keep case for LLaMA-style models
+  min_length: 5      # Minimum sequence length in tokens
+  max_length: 2048   # Maximum sequence length in tokens
+  shuffle: true
+  validation_split: 0.02  # 2% of data for validation
+  
+# Data quality filters
+quality:
+  non_text_chars_ratio: 0.3  # Max ratio of non-alphanumeric chars
+  enable_length_filter: true
+  enable_char_filter: true 

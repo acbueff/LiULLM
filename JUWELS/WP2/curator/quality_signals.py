@@ -29,6 +29,7 @@ def alias(f):
 def ratio(a, b):
     return (a / b).cast(pld.Float32)
 
+EMPTY_LINES = r'(?m:^\s*$)'
 LINES = r'(?m:$)'
 ENDING_PUNCTUATION = r'(?m:\p{P}\s*$)'
 ENDING_ELLIPSIS = r'(?m:(\u2026|\.\.\.|\. \. \.)\s*$)'
@@ -225,17 +226,18 @@ def ngrams(text, n):
     return ngrams.list.eval(pl.element().value_counts().struct[1]).list.sum()
 
 def get_signals(src):
-    return pl.scan_parquet(src).select(*all_signals(pl.col('text')))
+    return pl.scan_parquet(src, low_memory=True).select(*all_signals(pl.col('text')))
 
 async def runner(queue):
     while True:
         src, dst = await queue.get()
-        print(f'Starting: {src}', flush=True)
-        df = await get_signals(src).collect_async()
+        print(f'{datetime.datetime.now()} STARTING: {src}', flush=True)
+        df = await get_signals(src).collect_async(streaming=True)
         tmp = dst.with_name(f'TMP_{dst.name}')
         df.write_parquet(tmp)
         tmp.rename(dst)
-        print(f'Finished: {src}', flush=True)
+        del df
+        print(f'{datetime.datetime.now()} FINISHED: {src}', flush=True)
         queue.task_done()
 
 def ordered_scan(root, pattern):
@@ -247,27 +249,39 @@ def ordered_scan(root, pattern):
             yield curr
     yield from inner(root)
 
+async def memwatch():
+    while True:
+        print(f'memory: {psutil.virtual_memory().percent}%')
+        m1, m5, m15 = [x / psutil.cpu_count() * 100 for x in psutil.getloadavg()]
+        print(f'cpu: {m1}% {m5}% {m15}%')
+        await asyncio.sleep(30)
+
+
 def get_files(dir):
     for f in sorted(dir.rglob('*.parquet')):
         yield f
 
-async def run_all(src_root, dst_root, tid, tot, WORKERS=16):
+async def run_all(src_root, dst_root, tid, tot, WORKERS=12):
     my_files = islice(ordered_scan(src_root, '*.parquet'), tid, None, tot)
     queue = asyncio.Queue(WORKERS*2)
     tasks = [asyncio.create_task(runner(queue)) for _ in range(WORKERS)]
+    watcher = asyncio.create_task(memwatch())
     for src in my_files:
         dst = dst_root / src.relative_to(src_root)
         if not dst.exists():
             dst.parent.mkdir(parents=True, exist_ok=True)
             await queue.put((src, dst))
     
-    queue.join()
-
+    await queue.join()
+    
+    watcher.cancel()
     for task in tasks:
         task.cancel()
 
 
 if __name__ == '__main__':
+    import psutil
+    import datetime
     import asyncio
     import pathlib
     import sys
