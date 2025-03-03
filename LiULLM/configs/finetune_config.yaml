@@ -1,61 +1,58 @@
 # Fine-tuning Configuration
 
-# Base model to fine-tune
-model:
-  checkpoint_path: "outputs/checkpoints/pretrain-final"  # Path to pretrained model
-  
-# Instruction data
-data:
-  train_file: "data/processed/instructions.jsonl"
-  validation_file: "data/processed/instructions_val.jsonl"
-  prompt_template: "<s>User: {instruction}\nAssistant: "  # Template for instruction prompts
-  completion_template: "{response}</s>"                   # Template for instruction completions
-  max_length: 2048                                        # Maximum sequence length
-  
-# Fine-tuning parameters (generally lower than pretraining)
+# Output directory
+output_dir: "outputs/finetuned"
+
+# Training hyperparameters
 training:
+  # LoRA parameters
+  lora:
+    use_lora: true
+    r: 16
+    alpha: 32
+    dropout: 0.05
+    target_modules: ["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"]
+  
+  # Training parameters
   num_train_epochs: 3
-  learning_rate: 1.0e-5                # Lower learning rate for fine-tuning
-  lr_scheduler_type: "cosine"          # Learning rate schedule
-  warmup_ratio: 0.03                   # Warmup ratio instead of steps
+  per_device_train_batch_size: 4
+  per_device_eval_batch_size: 4
+  gradient_accumulation_steps: 8
+  learning_rate: 2.0e-5
   weight_decay: 0.01
-  adam_beta1: 0.9
-  adam_beta2: 0.95
-  adam_epsilon: 1.0e-8
+  warmup_ratio: 0.03
   max_grad_norm: 1.0
   
-# Batch size and optimization settings
-batch_size:
-  per_device_train_batch_size: 2       # Smaller batch size for fine-tuning
-  per_device_eval_batch_size: 2        # Batch size for evaluation
-  gradient_accumulation_steps: 4       # Accumulate gradients to simulate larger batch
+  # Optimizer and scheduler
+  optimizer_type: "adamw_torch"
+  lr_scheduler_type: "cosine"
   
-# Mixed precision training
-mixed_precision:
-  enabled: true
-  precision: "fp16"                    # or "bf16" on compatible hardware
+  # Evaluation and logging
+  eval_steps: 0.1  # Fraction of training steps
+  save_steps: 0.2  # Fraction of training steps
+  logging_steps: 10
+  report_to: ["tensorboard"]
   
-# PEFT options (Parameter-Efficient Fine-Tuning)
-peft:
-  use_peft: false                      # Whether to use PEFT (LoRA, etc.)
-  method: "lora"                       # PEFT method: "lora", "prefix", etc.
-  lora_r: 8                            # LoRA rank
-  lora_alpha: 16                       # LoRA alpha parameter
-  lora_dropout: 0.05                   # LoRA dropout
-  target_modules: ["q_proj", "k_proj", "v_proj", "o_proj"]  # Modules to apply LoRA to
+  # Mixed precision
+  fp16: true
+  bf16: false
   
-# Evaluation during training
-evaluation:
-  eval_steps: 500                      # Evaluate every X steps
-  eval_strategy: "steps"               # Evaluation strategy
+  # Other
+  seed: 42
+  ddp_find_unused_parameters: false
+  gradient_checkpointing: true
   
-# Checkpointing
-checkpointing:
-  save_steps: 500
-  save_total_limit: 3                  # Maximum number of checkpoints to keep
+# Generation parameters for evaluation
+generation:
+  max_new_tokens: 512
+  do_sample: true
+  temperature: 0.7
+  top_p: 0.9
+  top_k: 50
+  repetition_penalty: 1.1
   
-# Logging
-logging:
-  logging_steps: 50
-  report_to: "wandb"
-  run_name: "instruction-finetune"     # W&B run name 
+# Data configuration
+data:
+  prompt_template: "<s>User: {instruction}\nAssistant: "  # Template for instruction prompts
+  completion_template: "{response}</s>"                   # Template for instruction completions
+  max_length: 2048                                        # Maximum sequence length 

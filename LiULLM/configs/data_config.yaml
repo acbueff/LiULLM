@@ -30,4 +30,17 @@ processing:
 quality:
   non_text_chars_ratio: 0.3  # Max ratio of non-alphanumeric chars
   enable_length_filter: true
-  enable_char_filter: true 
+  enable_char_filter: true
+
+# HuggingFace download configuration (new section)
+huggingface_download:
+  english:
+    repo: "PleIAs/English-PD"
+    size_gb: 5.0
+  swedish:
+    dataset_path: "hf://datasets/HuggingFaceFW/fineweb-2/data/swe_Latn/train"
+    min_gb: 2.5
+    max_gb: 3.0
+  icelandic:
+    repo: "PleIAs/Icelandic-PD"  # Replace with actual repo
+    size_gb: 2.0

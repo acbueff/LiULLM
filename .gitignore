@@ -2,3 +2,6 @@ JUWELS/WP2/data/eng-common-corpus
 JUWELS/WP2/data/fineweb2
 JUWELS/WP2/data/icelandic-cc
 logs
+data/raw
+data/processed
+data/instruction_tuning
