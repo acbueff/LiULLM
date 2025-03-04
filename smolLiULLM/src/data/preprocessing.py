@@ -165,13 +165,41 @@ class TextPreprocessor:
         all_lines = []
         
         # Get list of files
-        files = glob.glob(os.path.join(dir_path, file_pattern))
-        logger.info(f"Found {len(files)} files in directory")
-        
-        # Process each file
-        for file_path in files:
-            processed_lines = self.process_file(file_path)
-            all_lines.extend(processed_lines)
+        if '.parquet' in file_pattern:
+            try:
+                import pandas as pd
+                files = glob.glob(os.path.join(dir_path, file_pattern))
+                logger.info(f"Found {len(files)} parquet files in directory")
+                
+                # Process each parquet file
+                for file_path in files:
+                    logger.info(f"Processing parquet file: {file_path}")
+                    try:
+                        df = pd.read_parquet(file_path)
+                        # Assuming the text is in a column named 'text' - adjust if needed
+                        text_column = 'text' if 'text' in df.columns else df.columns[0]
+                        for text in df[text_column]:
+                            self.stats['total_lines'] += 1
+                            # Normalize text
+                            normalized = self.normalize_text(text)
+                            # Apply quality filters
+                            if self.is_valid_text(normalized):
+                                all_lines.append(normalized)
+                                self.stats['kept_lines'] += 1
+                    except Exception as e:
+                        logger.error(f"Error processing parquet file {file_path}: {e}")
+            except ImportError:
+                logger.error("Could not import pandas library which is required for parquet processing.")
+                return []
+        else:
+            # Standard text file processing
+            files = glob.glob(os.path.join(dir_path, file_pattern))
+            logger.info(f"Found {len(files)} files in directory")
+            
+            # Process each file
+            for file_path in files:
+                processed_lines = self.process_file(file_path)
+                all_lines.extend(processed_lines)
             
         return all_lines
     
@@ -227,8 +255,9 @@ class TextPreprocessor:
             logger.warning(f"Directory for {lang} not found: {dir_path}")
             return []
         
-        # Process all files in the directory
-        lines = self.process_directory(dir_path)
+        # Process all files in the directory with appropriate file pattern
+        file_pattern = "*.parquet" if lang == "english" else "*.txt"
+        lines = self.process_directory(dir_path, file_pattern=file_pattern)
         
         # Deduplicate text if enabled
         if self.remove_duplicates:
@@ -247,7 +276,8 @@ class TextPreprocessor:
         all_texts: Dict[str, List[str]],
         output_train_path: str,
         output_val_path: str,
-        validation_split: float = 0.02
+        validation_split: float = 0.02,
+        create_separate_files: bool = True
     ) -> None:
         """
         Create training and validation splits from processed texts.
@@ -257,6 +287,7 @@ class TextPreprocessor:
             output_train_path: Path to save training data.
             output_val_path: Path to save validation data.
             validation_split: Fraction of data to use for validation.
+            create_separate_files: Whether to create separate files for each language.
         """
         logger.info("Creating train/validation split")
         
@@ -280,6 +311,24 @@ class TextPreprocessor:
             
             logger.info(f"{lang}: {len(lang_train)} training, {len(lang_val)} validation")
             
+            # Create separate files for each language if requested
+            if create_separate_files:
+                # Generate language-specific output paths
+                lang_train_path = output_train_path.replace('.jsonl', f'_{lang}.jsonl')
+                lang_val_path = output_val_path.replace('.jsonl', f'_{lang}.jsonl')
+                
+                # Write language-specific train and validation data
+                with open(lang_train_path, 'w', encoding='utf-8') as f:
+                    for line in lang_train:
+                        f.write(line + '\n')
+                
+                with open(lang_val_path, 'w', encoding='utf-8') as f:
+                    for line in lang_val:
+                        f.write(line + '\n')
+                
+                logger.info(f"Wrote {len(lang_train)} lines to {lang_train_path}")
+                logger.info(f"Wrote {len(lang_val)} lines to {lang_val_path}")
+            
             # Add to the global train/val sets
             train_texts.extend(lang_train)
             val_texts.extend(lang_val)
@@ -288,7 +337,7 @@ class TextPreprocessor:
         random.shuffle(train_texts)
         random.shuffle(val_texts)
         
-        # Write train and validation data
+        # Write combined train and validation data
         with open(output_train_path, 'w', encoding='utf-8') as f:
             for line in train_texts:
                 f.write(line + '\n')
@@ -333,10 +382,12 @@ class TextPreprocessor:
         output_train_path = self.config['processed_data']['train']
         output_val_path = self.config['processed_data']['validation']
         validation_split = self.config['processing'].get('validation_split', 0.02)
+        create_separate_files = self.config['processing'].get('create_separate_files', True)
         
         self.create_train_val_split(
             all_texts, 
             output_train_path, 
             output_val_path, 
-            validation_split
+            validation_split,
+            create_separate_files
         ) 

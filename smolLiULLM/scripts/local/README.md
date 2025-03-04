@@ -1,6 +1,6 @@
-# LiULLM Local Execution Scripts
+# smolLiULLM Local Execution Scripts
 
-This directory contains scripts for running the LiULLM training pipeline locally on a single machine with GPU support. These scripts provide an alternative to the Slurm-based execution used on HPC clusters.
+This directory contains scripts for running the smolLiULLM training pipeline locally on a single machine with GPU support. These scripts provide an alternative to the Slurm-based execution used on HPC clusters.
 
 ## Available Scripts
 
@@ -17,7 +17,7 @@ This directory contains scripts for running the LiULLM training pipeline locally
 - Python 3.8 or higher
 - PyTorch 2.0 or higher
 - Transformers 4.30 or higher
-- All dependencies as specified in the main LiULLM requirements
+- All dependencies as specified in the main smolLiULLM requirements
 
 ## Usage Examples
 

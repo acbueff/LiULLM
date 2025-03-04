@@ -12,11 +12,11 @@ import json
 import time
 from pathlib import Path
 
-# Add LiULLM directory to path
+# Add smolLiULLM directory to path
 root_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.insert(0, root_dir)
 
-# Import LiULLM modules
+# Import smolLiULLM modules
 from src.utils.logging import setup_logging
 from src.utils.config import load_config
 from src.models.llama_model import load_model

@@ -25,7 +25,8 @@ processing:
   max_length: 2048   # Maximum sequence length in tokens
   shuffle: true
   validation_split: 0.02  # 2% of data for validation
-  
+  create_separate_files: true  # Create separate files for each language
+
 # Data quality filters
 quality:
   non_text_chars_ratio: 0.3  # Max ratio of non-alphanumeric chars

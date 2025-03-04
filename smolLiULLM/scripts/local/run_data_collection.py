@@ -12,11 +12,11 @@ import importlib.util
 import time
 from pathlib import Path
 
-# Add LiULLM directory to path
+# Add smolLiULLM directory to path
 root_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.insert(0, root_dir)
 
-# Import LiULLM modules using the Python import system
+# Import smolLiULLM modules using the Python import system
 from src.utils.logging import setup_logging
 
 def load_module_from_path(module_name, file_path):
@@ -65,6 +65,12 @@ def parse_args():
         default="data/raw",
         help="Directory to save downloaded data"
     )
+    parser.add_argument(
+        "--size_limit",
+        type=float,
+        default=5.0,
+        help="Size limit in GB for downloaded data per language"
+    )
     
     # Instruction data arguments
     parser.add_argument(
@@ -112,8 +118,9 @@ def main():
     
     # Setup logging
     log_level = logging.DEBUG if args.debug else logging.INFO
-    log_file = os.path.join(args.log_dir, f"data_collection_{int(start_time)}.log")
-    setup_logging(log_level=log_level, log_file=log_file)
+    log_dir = args.log_dir
+    timestamp = int(start_time)
+    setup_logging(log_dir=log_dir, log_level=log_level, experiment_name=f"data_collection_{timestamp}")
     logger = logging.getLogger(__name__)
     
     # Create necessary directories
@@ -131,11 +138,18 @@ def main():
         for lang in args.languages:
             logger.info(f"Downloading data for language: {lang}")
             if lang == "en":
-                download_datasets.download_english_data(args.output_dir)
+                # Convert GB to bytes
+                size_limit_bytes = int(args.size_limit * 1024**3)
+                download_datasets.download_english_data(args.output_dir, size_limit_bytes)
             elif lang == "sv":
-                download_datasets.download_swedish_data(args.output_dir)
+                # Swedish data requires min and max size in bytes
+                min_bytes = int(args.size_limit * 0.8 * 1024**3)  # 80% of size_limit
+                max_bytes = int(args.size_limit * 1024**3)
+                download_datasets.download_swedish_data(args.output_dir, min_bytes, max_bytes)
             elif lang == "is":
-                download_datasets.download_icelandic_data(args.output_dir)
+                # Icelandic data also requires size limit
+                size_limit_bytes = int(args.size_limit * 1024**3)
+                download_datasets.download_icelandic_data(args.output_dir, size_limit_bytes)
             else:
                 logger.warning(f"Unknown language: {lang}")
     

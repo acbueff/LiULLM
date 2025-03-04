@@ -5,3 +5,5 @@ logs
 data/raw
 data/processed
 data/instruction_tuning
+src/utils/__pycache__
+LiULLM/src/utils/__pycache__/

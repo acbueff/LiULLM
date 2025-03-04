@@ -11,11 +11,11 @@ import logging
 import time
 from pathlib import Path
 
-# Add LiULLM directory to path
+# Add smolLiULLM directory to path
 root_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.insert(0, root_dir)
 
-# Import LiULLM modules
+# Import smolLiULLM modules
 from src.utils.logging import setup_logging
 from src.utils.config import load_config
 from src.data.preprocessing import TextPreprocessor
@@ -86,8 +86,9 @@ def main():
     
     # Setup logging
     log_level = logging.DEBUG if args.debug else logging.INFO
-    log_file = os.path.join(args.log_dir, f"preprocessing_{int(start_time)}.log")
-    setup_logging(log_level=log_level, log_file=log_file)
+    log_dir = args.log_dir
+    timestamp = int(start_time)
+    setup_logging(log_dir=log_dir, log_level=log_level, experiment_name=f"preprocessing_{timestamp}")
     logger = logging.getLogger(__name__)
     
     # Create necessary directories
@@ -98,6 +99,10 @@ def main():
     
     # Load configuration
     config = load_config(args.config)
+    
+    # Create data section if it doesn't exist
+    if 'data' not in config:
+        config['data'] = {}
     
     # Update config with CLI arguments if provided
     if args.input_dir:
@@ -110,6 +115,32 @@ def main():
         config['data']['val_file'] = args.val_file
     if args.val_split:
         config['data']['val_split'] = args.val_split
+        
+    # Update the raw_data section to use the provided input_dir
+    if 'raw_data' not in config:
+        config['raw_data'] = {}
+    
+    # Set paths for each language to the correct subdirectories
+    if args.input_dir:
+        config['raw_data']['english'] = os.path.join(args.input_dir, "eng")
+        config['raw_data']['swedish'] = os.path.join(args.input_dir, "swe")
+        config['raw_data']['icelandic'] = os.path.join(args.input_dir, "isl")
+    
+    # Update processed_data section with output paths
+    if 'processed_data' not in config:
+        config['processed_data'] = {}
+    
+    if args.output_dir and args.train_file:
+        config['processed_data']['train'] = os.path.join(args.output_dir, args.train_file)
+    if args.output_dir and args.val_file:
+        config['processed_data']['validation'] = os.path.join(args.output_dir, args.val_file)
+    
+    # Update processing section with val_split if provided
+    if 'processing' not in config:
+        config['processing'] = {}
+    
+    if args.val_split:
+        config['processing']['validation_split'] = args.val_split
     
     # Log the configuration
     logger.info(f"Data preprocessing configuration: {config['data']}")
@@ -119,7 +150,30 @@ def main():
     
     # Preprocess data
     logger.info("Starting data preprocessing...")
-    train_samples, val_samples = preprocessor.preprocess_and_save()
+    
+    # Process all languages
+    all_texts = {}
+    for lang in ["english", "swedish", "icelandic"]:
+        if os.path.exists(config['raw_data'].get(lang, "")):
+            logger.info(f"Processing {lang} data...")
+            all_texts[lang] = preprocessor.process_language_data(lang)
+        else:
+            logger.info(f"No data found for {lang}")
+    
+    # Create train/val split
+    train_path = os.path.join(args.output_dir, args.train_file)
+    val_path = os.path.join(args.output_dir, args.val_file)
+    
+    preprocessor.create_train_val_split(
+        all_texts, 
+        train_path, 
+        val_path, 
+        validation_split=args.val_split
+    )
+    
+    # Get counts
+    train_samples = sum(len(texts) for texts in all_texts.values()) * (1 - args.val_split)
+    val_samples = sum(len(texts) for texts in all_texts.values()) * args.val_split
     
     elapsed_time = time.time() - start_time
     logger.info(f"Data preprocessing completed in {elapsed_time:.2f} seconds")
