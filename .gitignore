@@ -6,4 +6,13 @@ data/raw
 data/processed
 data/instruction_tuning
 src/utils/__pycache__
-LiULLM/src/utils/__pycache__/
+LiULLM/src/utils/__pycache__
+LiULLM/src/utils/llm_utils/__pycache__
+LiULLM/src/utils/llm_utils/llm_utils/__pycache__
+LiULLM/src/utils/llm_utils/llm_utils/llm_utils/__pycache__
+LiULLM/src/utils/llm_utils/llm_utils/llm_utils/__pycache__
+LiULLM/src/utils/llm_utils/llm_utils/llm_utils/__pycache__
+LiULLM/src/utils/llm_utils/llm_utils/llm_utils/__pycache__
+LiULLM/data/
+smolLiULLM/scripts/data_download/
+smolLiULLM/data/raw/

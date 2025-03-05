@@ -21,7 +21,7 @@ from src.utils.logging import setup_logging
 
 # Constants
 DEFAULT_DATASET = "yahma/alpaca-cleaned"
-DEFAULT_OUTPUT_DIR = "data/instruction_tuning"
+DEFAULT_OUTPUT_DIR = "./data/instruction_tuning"
 DEFAULT_TRAIN_FILE = "alpaca_cleaned_train.json"
 DEFAULT_VAL_FILE = "alpaca_cleaned_val.json"
 

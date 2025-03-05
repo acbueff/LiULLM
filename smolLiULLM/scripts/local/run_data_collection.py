@@ -35,9 +35,9 @@ def parse_args():
     parser.add_argument(
         "--data_type",
         type=str,
-        choices=["pretraining", "instruction"],
+        choices=["pretraining", "instruction", "code"],
         default="pretraining",
-        help="Type of data to download: pretraining or instruction"
+        help="Type of data to download: pretraining, instruction, or code"
     )
     parser.add_argument(
         "--log_dir",
@@ -62,14 +62,22 @@ def parse_args():
     parser.add_argument(
         "--output_dir",
         type=str,
-        default="data/raw",
+        default="./data/raw",
         help="Directory to save downloaded data"
     )
     parser.add_argument(
         "--size_limit",
         type=float,
         default=5.0,
-        help="Size limit in GB for downloaded data per language"
+        help="Size limit for downloads in GB"
+    )
+    
+    parser.add_argument(
+        "--code_config",
+        type=str,
+        default="arxiv",
+        choices=["arxiv", "math_stack", "open_web_math"],
+        help="Configuration to use for code data download"
     )
     
     # Instruction data arguments
@@ -82,7 +90,7 @@ def parse_args():
     parser.add_argument(
         "--instruction_output_dir",
         type=str,
-        default="data/instruction_tuning",
+        default="./data/instruction_tuning",
         help="Directory to save instruction data"
     )
     parser.add_argument(
@@ -152,6 +160,24 @@ def main():
                 download_datasets.download_icelandic_data(args.output_dir, size_limit_bytes)
             else:
                 logger.warning(f"Unknown language: {lang}")
+    
+    elif args.data_type == "code":
+        # Import the download_code_data module
+        code_data_path = os.path.join(root_dir, "scripts", "data_download", "download_code_data.py")
+        code_data = load_module_from_path("download_code_data", code_data_path)
+        
+        # Create code data directory
+        code_output_dir = os.path.join(args.output_dir, "code")
+        os.makedirs(code_output_dir, exist_ok=True)
+        
+        # Download code data
+        logger.info("Downloading code data from Proof Pile 2")
+        size_limit_bytes = int(args.size_limit * 1024**3)
+        code_data.download_code_data(
+            output_dir=code_output_dir,
+            config=args.code_config,
+            size_limit=size_limit_bytes
+        )
     
     else:  # instruction data
         # Import the download_instruction_data module

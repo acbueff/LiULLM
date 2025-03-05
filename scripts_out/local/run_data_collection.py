@@ -12,18 +12,32 @@ import importlib.util
 import time
 from pathlib import Path
 
-# Add current directory to path to find LiULLM
+# Add required paths to sys.path
 current_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-liullm_dir = os.path.join(current_dir, "LiULLM")
-sys.path.insert(0, liullm_dir)
+smolliullm_dir = os.path.join(current_dir, "smolLiULLM")
+sys.path.insert(0, smolliullm_dir)
 
-# Now try to import from LiULLM
+# Try to import from smolLiULLM
 try:
-    from LiULLM.src.utils.logging import setup_logging
+    from smolLiULLM.src.utils.logging import setup_logging
 except ImportError:
-    # If that fails, adjust path again to try direct import
-    sys.path.insert(0, os.path.dirname(os.path.dirname(current_dir)))
-    from src.utils.logging import setup_logging
+    # If that fails, try direct import from smolLiULLM
+    sys.path.insert(0, os.path.join(smolliullm_dir, "src"))
+    try:
+        from utils.logging import setup_logging
+    except ImportError:
+        # Last resort - create a simple setup_logging function
+        def setup_logging(log_dir, log_level, experiment_name):
+            os.makedirs(log_dir, exist_ok=True)
+            logging.basicConfig(
+                level=log_level,
+                format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                handlers=[
+                    logging.FileHandler(os.path.join(log_dir, f"{experiment_name}.log")),
+                    logging.StreamHandler()
+                ]
+            )
+            return logging.getLogger(__name__)
 
 def load_module_from_path(module_name, file_path):
     """Dynamically load a Python module from a file path."""
@@ -41,9 +55,9 @@ def parse_args():
     parser.add_argument(
         "--data_type",
         type=str,
-        choices=["pretraining", "instruction"],
+        choices=["pretraining", "instruction", "code"],
         default="pretraining",
-        help="Type of data to download: pretraining or instruction"
+        help="Type of data to download: pretraining, instruction, or code"
     )
     parser.add_argument(
         "--log_dir",
@@ -70,6 +84,20 @@ def parse_args():
         type=str,
         default="data/raw",
         help="Directory to save downloaded data"
+    )
+    parser.add_argument(
+        "--size_limit",
+        type=float,
+        default=2.0,
+        help="Maximum size of data in GB"
+    )
+    
+    parser.add_argument(
+        "--code_config",
+        type=str,
+        default="default",
+        choices=["default", "arxiv", "open-web-math", "algebraic-stack"],
+        help="Configuration to use for code data download"
     )
     
     # Instruction data arguments
@@ -140,7 +168,7 @@ def main():
     
     if args.data_type == "pretraining":
         # Import the download_datasets module
-        download_datasets_path = os.path.join(liullm_dir, "scripts", "data_download", "download_datasets.py")
+        download_datasets_path = os.path.join(smolliullm_dir, "scripts", "data_download", "download_datasets.py")
         logger.info(f"Loading download_datasets from: {download_datasets_path}")
         download_datasets = load_module_from_path("download_datasets", download_datasets_path)
         
@@ -156,9 +184,28 @@ def main():
             else:
                 logger.warning(f"Unknown language: {lang}")
     
+    elif args.data_type == "code":
+        # Import the download_code_data module
+        code_data_path = os.path.join(smolliullm_dir, "scripts", "data_download", "download_code_data.py")
+        logger.info(f"Loading download_code_data from: {code_data_path}")
+        download_code_data = load_module_from_path("download_code_data", code_data_path)
+        
+        # Create code data directory
+        code_output_dir = os.path.join(args.output_dir, "code")
+        os.makedirs(code_output_dir, exist_ok=True)
+        
+        # Download code data
+        logger.info("Downloading code data from Proof Pile 2")
+        size_limit_gb = args.size_limit if hasattr(args, 'size_limit') else 2  # Default to 2GB
+        download_code_data.download_code_data(
+            output_dir=code_output_dir,
+            size_limit=int(size_limit_gb * 1024**3),
+            config=args.code_config
+        )
+    
     else:  # instruction data
         # Import the download_instruction_data module
-        instruction_data_path = os.path.join(liullm_dir, "scripts", "data_download", "download_instruction_data.py")
+        instruction_data_path = os.path.join(smolliullm_dir, "scripts", "data_download", "download_instruction_data.py")
         logger.info(f"Loading download_instruction_data from: {instruction_data_path}")
         instruction_data = load_module_from_path("download_instruction_data", instruction_data_path)
         
