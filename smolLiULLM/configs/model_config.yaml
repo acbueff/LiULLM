@@ -1,0 +1,66 @@
+# Model and Training Configuration
+
+# Model architecture (LLaMA-based)
+model:
+  base_model: "meta-llama/Llama-2-7b"  # Used for architecture reference only
+  use_pretrained: false                # If true, fine-tune existing model
+  hidden_size: 2048                    # Smaller than 7B to fit on limited hardware
+  intermediate_size: 5632              # 2.75x hidden_size
+  num_hidden_layers: 16                # Reduced from original 32 layers
+  num_attention_heads: 16              # Number of attention heads
+  max_position_embeddings: 2048        # Maximum context length
+  vocab_size: 32000                    # Must match tokenizer vocab size
+  gradient_checkpointing: true         # Enable gradient checkpointing for memory efficiency
+  tie_word_embeddings: false           # Typical for decoder-only models
+
+# Model initialization
+initialization:
+  random_seed: 42
+  init_method: "normal"                # Initialization method for weights
+  init_std: 0.02                       # Standard deviation for normal init
+
+# Training parameters
+training:
+  max_steps: 100000                    # Maximum training steps
+  learning_rate: 2.0e-4                # Peak learning rate
+  lr_scheduler_type: "cosine"          # Learning rate schedule
+  warmup_steps: 2000                   # LR warmup steps
+  weight_decay: 0.01                   # L2 regularization
+  adam_beta1: 0.9                      # Adam optimizer beta1
+  adam_beta2: 0.95                     # Adam optimizer beta2
+  adam_epsilon: 1.0e-8                 # Adam optimizer epsilon
+  max_grad_norm: 1.0                   # Gradient clipping
+  
+# Batch size and optimization settings
+batch_size:
+  per_device_train_batch_size: 4       # Batch size per GPU for training
+  per_device_eval_batch_size: 4        # Batch size per GPU for evaluation
+  gradient_accumulation_steps: 8       # Gradient accumulation to simulate larger batch
+
+# Mixed precision training
+mixed_precision:
+  enabled: true
+  precision: "fp16"                    # or "bf16" on compatible hardware
+  
+# Parallelism and distribution settings
+parallelism:
+  use_deepspeed: false                 # Enable DeepSpeed
+  use_fsdp: false                      # Enable PyTorch FSDP
+  ds_config_file: "configs/deepspeed.json"  # DeepSpeed config file path
+  fsdp_config_file: "configs/fsdp.json"     # FSDP config file path
+
+# Checkpointing
+checkpointing:
+  save_steps: 5000                     # Save checkpoint every X steps
+  save_total_limit: 2                  # Maximum number of checkpoints to keep
+  resume_from_checkpoint: true         # Resume from checkpoint if available
+  
+# Evaluation
+evaluation:
+  eval_steps: 10000                    # Evaluate every X steps
+  eval_strategy: "steps"               # When to evaluate: steps, epoch, or no
+  
+# Logging
+logging:
+  logging_steps: 100                   # Log metrics every X steps
+  report_to: "wandb"                   # Logging destination: wandb, tensorboard, or both 

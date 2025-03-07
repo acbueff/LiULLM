@@ -1,0 +1,45 @@
+# Data directories
+data/raw/
+data/processed/
+data/instruction_tuning/
+LiULLM/data/
+smolLiULLM/data/raw/
+smolLiULLM/data/processed/
+smolLiULLM/data/tokenizer/
+
+# Log directories
+logs/
+LiULLM/smolLiULLM/outputs/logs
+**/logs/
+
+# Cache directories
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.env/
+.venv/
+
+# Large data files
+*.parquet
+*.arrow
+*.txt
+*.jsonl
+*.json
+
+# JUWELS specific
+JUWELS/WP2/data/eng-common-corpus/
+JUWELS/WP2/data/fineweb2/
+JUWELS/WP2/data/icelandic-cc/
+
+# IDE specific
+.vscode/
+.idea/
+*.swp
+*.swo
+
+LiULLM/data/processed
+LiULLM/data/tokenizer
