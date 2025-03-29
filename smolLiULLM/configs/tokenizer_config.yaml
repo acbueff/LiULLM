@@ -1,0 +1,25 @@
+# Tokenizer Training Configuration
+
+# Input data for tokenizer training
+train_data: "data/processed/train.txt"
+
+# Output paths
+output_dir: "outputs/tokenizer"
+tokenizer_prefix: "llm-tokenizer"
+
+# Tokenizer parameters
+model_type: "bpe"  # One of: bpe, unigram, wordpiece, char
+byte_level: true   # Use byte-level BPE (recommended for multilingual)
+vocab_size: 32000  # Standard for LLaMA-style models
+min_frequency: 2   # Minimum frequency to include a token
+
+# Special tokens
+special_tokens:
+  - "<s>"          # Beginning of sequence
+  - "</s>"         # End of sequence
+  - "<pad>"        # Padding token
+  - "<unk>"        # Unknown token
+  - "<mask>"       # Mask token (if needed for MLM)
+
+# Character normalization
+normalization: "NFC"  # Unicode normalization (NFC, NFKC, NFD, NFKD) 

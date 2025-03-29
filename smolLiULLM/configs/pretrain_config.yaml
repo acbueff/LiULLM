@@ -1,0 +1,80 @@
+# Multilingual Pretraining Configuration
+
+# Output directory for model checkpoints
+output_dir: "outputs/pretrained_multilingual"
+
+# Tokenizer configuration
+tokenizer_path: "data/tokenizer"  # Path to tokenizer directory
+
+# Data configuration
+data:
+  block_size: 2048                # Maximum sequence length
+  preprocessing_num_workers: 4    # Number of workers for preprocessing
+  overwrite_cache: false          # Whether to overwrite the cached dataset
+  
+  # Language weights for multilingual training
+  language_weights:
+    english: 0.4                  # Weight for English data
+    swedish: 0.4                  # Weight for Swedish data
+    code: 0.2                     # Weight for code data
+
+# Training configuration
+training:
+  num_train_epochs: 3             # Number of training epochs
+  max_steps: 100000               # Maximum number of training steps (overrides epochs if set)
+  per_device_train_batch_size: 4  # Batch size per GPU for training
+  per_device_eval_batch_size: 4   # Batch size per GPU for evaluation
+  gradient_accumulation_steps: 8  # Gradient accumulation steps
+  
+  # Optimizer settings
+  learning_rate: 5.0e-5           # Initial learning rate
+  weight_decay: 0.01              # Weight decay
+  adam_beta1: 0.9                 # Adam beta1
+  adam_beta2: 0.95                # Adam beta2
+  adam_epsilon: 1.0e-8            # Adam epsilon
+  max_grad_norm: 1.0              # Gradient clipping
+  
+  # Learning rate scheduler
+  lr_scheduler_type: "cosine"     # Learning rate scheduler type
+  warmup_steps: 2000              # Warmup steps
+  
+  # Mixed precision training
+  fp16: true                      # Enable mixed precision training
+  bf16: false                     # Enable bfloat16 precision (if hardware supports it)
+  
+  # Checkpointing
+  save_strategy: "steps"          # When to save checkpoints: steps, epoch
+  save_steps: 5000                # Save checkpoint every X steps
+  save_total_limit: 3             # Maximum number of checkpoints to keep
+  resume_from_checkpoint: null    # Path to checkpoint to resume from
+  
+  # Evaluation
+  evaluation_strategy: "steps"    # When to evaluate: steps, epoch
+  eval_steps: 5000                # Evaluate every X steps
+  
+  # Logging
+  logging_strategy: "steps"       # When to log: steps, epoch
+  logging_steps: 100              # Log every X steps
+  
+  # Distributed training
+  local_rank: -1                  # Local rank for distributed training
+  deepspeed: null                 # Path to deepspeed config
+  
+  # Other settings
+  seed: 42                        # Random seed
+  dataloader_num_workers: 4       # Number of workers for data loading
+  group_by_length: false          # Group sequences of similar length together
+  gradient_checkpointing: true    # Enable gradient checkpointing
+  
+# Weights & Biases configuration
+use_wandb: true                   # Whether to use W&B for logging
+wandb_project: "multilingual-llm" # W&B project name
+wandb_entity: null                # W&B entity name
+wandb_run_name: null              # W&B run name
+wandb_watch: "gradients"          # What to log to W&B (all, gradients, parameters, None)
+
+# Chinchilla scaling parameters
+chinchilla_scaling:
+  enabled: true                   # Whether to use Chinchilla scaling
+  compute_optimal_size: true      # Whether to compute optimal model size
+  n_parameters_factor: 20         # Chinchilla N:D ratio (20:1 in the paper) 

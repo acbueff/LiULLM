@@ -1,0 +1,56 @@
+# Data Preprocessing Configuration
+
+# Raw data paths
+raw_data:
+  icelandic: "data/raw/isl/"
+  swedish: "data/raw/swe/"
+  english: "data/raw/eng/"
+  code: "data/raw/code/"
+
+# Processed data paths
+processed_data:
+  train: "data/processed/train.txt"
+  validation: "data/processed/val.txt"
+  
+# Sampling ratios for each language (to balance the dataset)
+sampling:
+  icelandic: 1.0
+  swedish: 1.0
+  english: 1.0
+  code: 1.0
+
+# Processing options
+processing:
+  remove_duplicates: true
+  lowercase: false  # Keep case for LLaMA-style models
+  min_length: 5      # Minimum sequence length in tokens
+  max_length: 2048   # Maximum sequence length in tokens
+  shuffle: true
+  validation_split: 0.05  # 5% of data for validation
+  create_separate_files: true  # Create separate files for each language
+
+# Data quality filters
+quality:
+  non_text_chars_ratio: 0.3  # Max ratio of non-alphanumeric chars
+  enable_length_filter: true
+  enable_char_filter: true
+
+# File type configuration for each language
+file_types:
+  english: "*.parquet"
+  swedish: "*.txt"
+  code: "*.jsonl"
+  icelandic: "*.txt"
+
+# HuggingFace download configuration (new section)
+huggingface_download:
+  english:
+    repo: "PleIAs/English-PD"
+    size_gb: 5.0
+  swedish:
+    dataset_path: "hf://datasets/HuggingFaceFW/fineweb-2/data/swe_Latn/train"
+    min_gb: 2.5
+    max_gb: 3.0
+  icelandic:
+    repo: "PleIAs/Icelandic-PD"  # Replace with actual repo
+    size_gb: 2.0
