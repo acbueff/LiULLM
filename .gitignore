@@ -1,0 +1,56 @@
+# Data directories
+data/raw/
+data/processed/
+data/instruction_tuning/
+data/tokenizer/
+smolLiULLM/data/raw/
+smolLiULLM/data/processed/
+smolLiULLM/data/tokenizer/
+smolLiULLM/data/instruction_tuning/
+
+# Output directories
+outputs/
+smolLiULLM/outputs/
+
+# Log directories
+logs/
+smolLiULLM/logs/
+smolLiULLM/outputs/logs/
+**/logs/
+
+# Cache directories
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.env/
+.venv/
+
+# Large data files
+*.parquet
+*.arrow
+*.txt
+*.jsonl
+*.json
+
+# JUWELS specific
+JUWELS/WP2/data/eng-common-corpus/
+JUWELS/WP2/data/fineweb2/
+JUWELS/WP2/data/icelandic-cc/
+
+# IDE specific
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Exceptions - add files you want to keep despite the patterns above
+!README.md
+!**/configs/*.json
+!**/configs/*.jsonl
+!**/configs/*.yaml
+!environment.yml
+!requirements.txt
